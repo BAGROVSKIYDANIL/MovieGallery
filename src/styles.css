@@ -1,0 +1,109 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-surface: #111413;
+  --color-surface-raised: #1b1f1c;
+  --color-border: #2b302c;
+  --color-paper: #f1f2e9;
+  --color-muted: #9aa097;
+  --color-accent: #d2ef83;
+  --font-sans: 'Segoe UI', Arial, sans-serif;
+}
+
+@layer base {
+  html {
+    color-scheme: dark;
+    scroll-behavior: smooth;
+  }
+  body {
+    margin: 0;
+    background: #111413;
+    color: #f1f2e9;
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  button,
+  a,
+  input {
+    -webkit-tap-highlight-color: transparent;
+  }
+  button:not(:disabled),
+  a {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid #d2ef83;
+    outline-offset: 5px;
+  }
+  ::selection {
+    background: #d2ef83;
+    color: #111413;
+  }
+  input[type='search']::-webkit-search-cancel-button {
+    display: none;
+  }
+}
+
+@layer components {
+  .page-shell {
+    @apply mx-auto max-w-[1440px] px-5 sm:px-10 lg:px-16;
+  }
+  .eyebrow {
+    @apply text-[10px] font-semibold uppercase tracking-[0.2em] text-muted;
+  }
+  .display-heading {
+    font-size: clamp(2.8rem, 6.4vw, 5.7rem);
+    font-weight: 600;
+    line-height: 1.06;
+    letter-spacing: -0.065em;
+  }
+  .movie-grid {
+    @apply grid grid-cols-2 gap-x-4 gap-y-9 sm:gap-x-6 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5;
+  }
+  .button-primary {
+    @apply inline-flex items-center justify-center gap-2.5 rounded-xl bg-accent px-5 py-3 text-sm font-semibold text-surface transition-colors hover:bg-[#e1ffa1] disabled:cursor-not-allowed disabled:opacity-40;
+  }
+  .button-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-surface-raised px-4 py-3 text-sm font-medium text-paper transition-colors hover:border-accent/50 hover:text-accent disabled:cursor-not-allowed disabled:opacity-35;
+  }
+  .skeleton {
+    background: linear-gradient(100deg, #1b1f1c 25%, #252b26 45%, #1b1f1c 65%);
+    background-size: 250% 100%;
+    animation: shimmer 1.6s ease-in-out infinite;
+  }
+  .hero-orbit {
+    position: absolute;
+    width: 540px;
+    height: 540px;
+    right: -155px;
+    top: -10px;
+    border: 1px solid #d2ef8310;
+    border-radius: 50%;
+    box-shadow:
+      0 0 0 60px #d2ef8305,
+      0 0 0 120px #d2ef8303;
+    background: radial-gradient(circle, #d2ef8306, transparent 65%);
+    pointer-events: none;
+  }
+  .skip-link {
+    @apply fixed left-4 top-4 z-50 -translate-y-24 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-surface focus:translate-y-0;
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: -100% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,31 @@
+<form role="search" class="flex flex-wrap gap-3 sm:flex-nowrap" (submit)="submit($event)">
+  <div
+    class="relative flex min-w-0 flex-1 items-center rounded-xl border border-border bg-surface-raised transition-colors focus-within:border-accent/70">
+    <app-icon name="search" class="pointer-events-none absolute left-4 text-muted" />
+    <label class="sr-only" for="movie-search">Search movies by title</label>
+    <input
+      id="movie-search"
+      type="search"
+      autocomplete="off"
+      maxlength="200"
+      placeholder="Search for your next favorite movie..."
+      [value]="query()"
+      (input)="change($event)"
+      class="h-14 w-full min-w-0 rounded-xl bg-transparent pl-12 pr-12 text-sm text-paper outline-none placeholder:text-muted/70 focus-visible:outline-none"
+    />
+    @if (query()) {
+      <button
+        type="button"
+        aria-label="Clear search"
+        title="Clear search"
+        class="absolute right-3 rounded-md p-2 text-muted transition-colors hover:text-paper"
+        (click)="clear()"
+      >
+        <app-icon name="close" />
+      </button>
+    }
+  </div>
+  <button type="submit" class="button-primary h-14 px-7">
+    <app-icon name="search" /> Search
+  </button>
+</form>

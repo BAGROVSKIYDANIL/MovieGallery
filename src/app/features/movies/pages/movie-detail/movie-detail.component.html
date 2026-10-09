@@ -1,0 +1,117 @@
+<section class="py-8 sm:py-12">
+  <button
+    type="button"
+    class="mb-10 inline-flex items-center gap-3 rounded-md py-2 text-sm text-muted transition-colors hover:text-accent"
+    (click)="back()"
+  >
+    <app-icon name="arrow" /> Back
+  </button>
+  @let movie = store.selectedMovie();
+
+  @switch (detailState()) {
+    @case ('loading') {
+          <span class="sr-only" role="status">Loading movie details</span>
+            <div aria-hidden="true" class="grid gap-10 md:grid-cols-[300px_1fr] lg:gap-16">
+              <div class="skeleton mx-auto aspect-[2/3] w-full max-w-[300px] rounded-xl"></div>
+              <div class="py-8">
+                <div class="skeleton h-4 w-24 rounded"></div>
+                <div class="skeleton mt-6 h-14 w-4/5 rounded"></div>
+                <div class="skeleton mt-6 h-5 w-1/2 rounded"></div>
+                <div class="skeleton mt-10 h-32 rounded"></div>
+              </div>
+            </div>
+    }
+    @case ('error') {
+        <app-status-panel
+            kind="error"
+            title="This story is out of reach"
+            [message]="store.detailError() ?? 'Unable to load movie details.'"
+            actionLabel="Try again"
+            (action)="retry()"
+          />
+    }
+    @case ('success') {
+      @if (movie) {
+        <article
+          class="grid items-start gap-10 md:grid-cols-[300px_1fr] lg:grid-cols-[340px_1fr] lg:gap-16"
+        >
+          <app-movie-poster
+            [path]="movie.poster_path"
+            [title]="movie.title"
+            [priority]="true"
+            class="mx-auto w-full max-w-[340px] shadow-2xl shadow-black/40"
+          />
+          <div class="min-w-0 py-2 sm:py-6">
+            <p class="eyebrow mb-5">Behind the story</p>
+            <h1
+              class="text-4xl font-semibold leading-tight tracking-tight text-paper sm:text-5xl lg:text-6xl"
+            >
+              {{ movie.title }}
+            </h1>
+            @if (movie.tagline) {
+              <p class="mt-5 text-lg italic leading-relaxed text-muted">{{ movie.tagline }}</p>
+            }
+            <div class="mt-7 flex flex-wrap items-center gap-4 text-sm text-muted">
+          <span
+            class="inline-flex items-center gap-2 rounded-lg border border-accent/20 bg-accent/10 px-3 py-2 font-semibold text-accent"
+          ><app-icon name="star" />{{
+              movie.vote_count > 0 ? (movie.vote_average | number: '1.1-1') : 'NR'
+            }}<span class="text-xs font-normal text-muted">/ 10</span></span
+          ><span>{{
+                movie.release_date ? (movie.release_date | date: 'yyyy') : 'Coming soon'
+              }}</span
+            ><span class="h-1 w-1 rounded-full bg-muted" aria-hidden="true"></span
+            ><span>{{ runtime() }}</span>
+            </div>
+            <ul aria-label="Genres" class="mt-6 flex flex-wrap gap-2">
+              @for (genre of movie.genres; track genre.id) {
+                <li class="rounded-full border border-border px-3 py-1.5 text-xs text-paper/80">
+                  {{ genre.name }}
+                </li>
+              }
+            </ul>
+            <div class="mt-9 border-t border-border pt-8">
+              <h2 class="text-lg font-semibold">The story</h2>
+              <p class="mt-4 max-w-2xl text-base leading-8 text-muted">
+                {{ movie.overview || 'No overview is available for this movie yet.' }}
+              </p>
+            </div>
+            <dl
+              class="mt-10 grid grid-cols-2 gap-x-6 gap-y-7 border-t border-border pt-8 sm:grid-cols-3"
+            >
+              <div>
+                <dt class="eyebrow">Release date</dt>
+                <dd class="mt-2 text-sm">
+                  {{
+                    movie.release_date ? (movie.release_date | date: 'MMM d, yyyy') : 'Not announced'
+                  }}
+                </dd>
+              </div>
+              <div>
+                <dt class="eyebrow">Original language</dt>
+                <dd class="mt-2 text-sm uppercase">{{ movie.original_language || 'Unknown' }}</dd>
+              </div>
+              <div>
+                <dt class="eyebrow">Audience votes</dt>
+                <dd class="mt-2 text-sm">{{ movie.vote_count | number }}</dd>
+              </div>
+              @if (movie.original_title !== movie.title) {
+                <div class="col-span-2">
+                  <dt class="eyebrow">Original title</dt>
+                  <dd class="mt-2 text-sm">{{ movie.original_title }}</dd>
+                </div>
+              }
+            </dl>
+          </div>
+        </article>
+      }
+    }
+    @case ('empty') {
+      <app-status-panel
+        kind="empty"
+        title="Movie not found"
+        message="Movie details are unavailable."
+      />
+    }
+  }
+</section>

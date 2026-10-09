@@ -1,0 +1,8 @@
+node_modules
+dist
+.angular
+.npm-cache
+.tools
+src/environments/tmdb-token.local.ts
+package-lock.json
+SPEC.md*

@@ -1,0 +1,83 @@
+<section class="relative overflow-hidden border-b border-border pb-10 pt-12 sm:pb-12 sm:pt-20">
+  <div aria-hidden="true" class="hero-orbit"></div>
+  <div class="relative max-w-3xl">
+    <div class="eyebrow mb-6 flex items-center gap-2.5">
+      <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> A world of stories, one screen away
+    </div>
+    <h1 class="display-heading max-w-2xl">
+      Find your next<br /><span class="text-accent">great watch.</span>
+    </h1>
+    <p class="mb-8 mt-6 max-w-lg text-sm leading-7 text-muted sm:text-base">
+      Big-screen adventures. Hidden gems. Stories that stay with you. Discover something worth
+      pressing play for.
+    </p>
+    <app-movie-search
+      [query]="store.searchQuery()"
+      (queryChanged)="store.searchMovies($event, true)"
+      (searched)="store.searchMovies($event)"
+    />
+    <p class="mt-4 text-xs text-muted/75">
+      Search by movie title. We’ll take care of the discovery.
+    </p>
+  </div>
+</section>
+<section id="catalog" class="scroll-mt-8 py-9 sm:py-12" aria-labelledby="catalog-title">
+  <div class="mb-8 flex flex-wrap items-end justify-between gap-4">
+    <div>
+      <p class="eyebrow mb-2">{{ isSearch() ? 'Your discovery' : 'The conversation starters' }}</p>
+      <h2 id="catalog-title" class="text-2xl font-semibold tracking-tight sm:text-3xl">
+        {{ isSearch() ? 'Search results' : 'Popular movies'
+        }}<span class="ml-2 text-accent">.</span>
+      </h2>
+      @if (isSearch()) {
+        <p class="mt-2 break-words text-sm text-muted">
+          Results for “{{ store.searchQuery().trim() }}”
+        </p>
+      }
+    </div>
+    @if (store.listState().status === 'success') {
+      <span role="status" class="rounded-full border border-border px-4 py-2 text-xs text-muted"
+        >{{ store.listState().totalResults | number }}
+        {{ store.listState().totalResults === 1 ? 'movie' : 'movies' }}</span
+      >
+    } @else if (!isSearch()) {
+      <span class="flex items-center gap-2 text-xs text-muted"
+        ><span class="h-1.5 w-1.5 rounded-full bg-accent"></span> Powered by TMDb</span
+      >
+    }
+  </div>
+  <app-movie-list
+    [movies]="store.movies()"
+    [loading]="store.loading()"
+    [error]="store.error()"
+    (retried)="store.retry()"
+    (cleared)="store.getPopularMovies()"
+  />
+  @if (store.listState().status === 'success' && store.listState().totalPages > 1) {
+    <nav
+      aria-label="Movie pages"
+      class="mt-12 flex items-center justify-center gap-4 border-t border-border pt-8"
+    >
+      <button
+        type="button"
+        class="button-secondary"
+        [disabled]="store.listState().page <= 1"
+        (click)="changePage(store.listState().page - 1)"
+      >
+        <app-icon name="arrow" /><span class="hidden sm:inline">Previous</span>
+      </button>
+      <span class="text-xs text-muted"
+        >Page <span class="text-paper">{{ store.listState().page }}</span> of
+        {{ store.listState().totalPages }}</span
+      >
+      <button
+        type="button"
+        class="button-secondary"
+        [disabled]="store.listState().page >= store.listState().totalPages"
+        (click)="changePage(store.listState().page + 1)"
+      >
+        <span class="hidden sm:inline">Next</span><app-icon name="next" />
+      </button>
+    </nav>
+  }
+</section>
